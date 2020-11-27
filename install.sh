@@ -43,7 +43,7 @@ check_connection() {
    # TinyCheck dependencies
 
    echo -e "\e[39m[+] Checking internet connectivity to install dependencies\e[39m"
-   if nc -zw1 example.com 443; then
+   if nc -zw1 google.com 443; then
        echo -e "\e[92m    [✔] Internet link is connected\e[39m"
    else
        echo -e "\e[91m    [✘] No internet connection, exiting.\e[39m"
@@ -299,7 +299,7 @@ check_wlan_interfaces() {
    for iface in $(ifconfig | grep -oE wlan[0-9]); do ifaces+=("$iface"); done
    for iface in $(rfkill list | grep -oE phy[0-9]); do rfaces+=("$iface"); done
 
-   if [[ "${#rfaces[@]}" > 1 ]]; then
+   if [[ "${#ifaces[@]}" > 1 ]]; then
        echo -e "\e[92m    [✔] Two interfaces detected, lets continue!\e[39m"
        if [[ "${#ifaces[@]}" < 1 ]]; then
                for iface in rfaces; do rfkill unblock "$iface"; done
