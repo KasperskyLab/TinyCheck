@@ -1,0 +1,108 @@
+{
+    "alerts": {
+        "PROTO-01": {
+            "title": "{} communication going outside the local network to {}.",
+            "description": "The {} protocol is commonly used in internal networks. Please, verify if the host {} leveraged other alerts which may indicates a possible malicious behavior."
+        },
+        "PROTO-02": {
+            "title": "{} connection to {} to a port over or equal to {}.",
+            "description": "{} connections have been seen to {} by using the port {}. The use of non-standard port can be sometimes associated to malicious activities. We recommend to check if this host has a good reputation by looking on other alerts and search it on the internet."
+        },
+        "PROTO-03": {
+            "title": "HTTP communications have been done to the host {}",
+            "description": "Your device exchanged with the host {} by using HTTP, an unencrypted protocol. Even if this behavior is not malicious by itself, it is unusual to see HTTP communications issued from smartphone applications running in the background. Please check the host reputation by searching it on the internet."
+        },
+        "PROTO-04": {
+            "title": "HTTP communications have been seen to the host {} on a non standard port ({}).",
+            "description": "Your device exchanged with the host {} by using HTTP, an unencrypted protocol on the port {}. This behavior is quite unusual. Please check the host reputation by searching it on the internet."
+        },
+        "PROTO-05": {
+            "title": "The server {} hasn't been resolved by any DNS query during the session",
+            "description": "It means that the server {} is likely not resolved by any domain name or the resolution has already been cached by the device. If the host appears in other alerts, please check it."
+        },
+        "IOC-01": {
+            "title": "A connection has been made to {} ({}) which is tagged as {}.",
+            "description": "The host {} has been explicitly blacklisted for malicious activities. Your device is likely compromised and needs to be investigated more deeply by IT security professionals."
+        },
+        "IOC-02": {
+            "title": "Communication to {} under the CIDR {} which is tagged as {}.",
+            "description": "The server {} is hosted under a network which is known to host malicious activities. Even if this behavior is not malicious by itself, you need to check if other alerts are also mentioning this host. If you have some doubts, please search this host on the internet to see if its legit or not."
+        },
+        "IOC-03": {
+            "title": "A DNS request have been done to {} which is tagged as {}.",
+            "description": "The domain name {} seen in the capture has been explicitly tagged as malicious. This indicates that your device is likely compromised and needs to be investigated deeply."
+        },
+        "IOC-04": {
+            "title": "A DNS request have been done to {} which is tagged as {}.",
+            "description": "The domain name {} seen in the capture has been explicitly tagged as a Tracker. This indicates that one of the active apps is geo-tracking your moves."
+        },
+        "IOC-05": {
+            "title": "A DNS request have been done to the domain {} which is a Free DNS.",
+            "description": "The domain name {} is using a Free DNS service. This kind of service is commonly used by cybercriminals or state-sponsored threat actors during their operations. It is very suspicious that an application running in background use this kind of service, please investigate.",
+        },
+        "IOC-06": {
+            "title": "A DNS request have been done to the domain {} which contains a suspect TLD.",
+            "description": "The domain name {} is using a suspect Top Level Domain ({}). Even not malicious, this non-generic TLD is used regularly by cybercrime or state-sponsored operations. Please check this domain by searching it on an internet search engine. If other alerts are related to this host, please consider it as very suspicious."
+        },
+        "IOC-07": {
+            "title": "The domain {} is using a suspect nameserver ({}).",
+            "description": "The domain name {} is using a nameserver that has been explicitly tagged to be associated to malicious activities. Many cybercriminals and state-sponsored threat actors are using this kind of registrars because they allow cryptocurrencies and anonymous payments. It is adviced to investigate on this domain and the associated running application by doing a forensic analysis of the phone."
+        },
+        "IOC-08": {
+            "title": "A certificate associated to {} activities have been found in the communication to {}.",
+            "description": "The certificate ({}) associated to {} has been explicitly tagged as malicious. This indicates that your device is likely compromised and need a forensic analysis."
+        },
+        "SSL-01": {
+            "title": "SSL connection done on a non standard port ({}) to {}",
+            "description": "It is not common to see SSL connections issued from smartphones using non-standard ports. Even this can be totally legit, we recommend to check the reputation of {}, by looking at its WHOIS record, the associated autonomus system, its creation date, and by searching it the internet.",
+        },
+        "SSL-02": {
+            "title": "An SSL connection to {} is using a free certificate.",
+            "description": "Free certificates — such as Let's Encrypt — are wildly used by command and control servers associated to malicious implants or phishing web pages. We recommend to check the host associated to this certificate, by looking at the domain name, its creation date, or by checking its reputation on the internet."
+        },
+        "SSL-03": {
+            "title": "The certificate associated to {} is self-signed.",
+            "description": "The use of self-signed certificates is a common thing for attacker infrastructure. We recommend to check the host {} which is associated to this certificate, by looking at the domain name (if any), its WHOIS record, its creation date, and by checking its reputation on the internet."
+        },
+        "ADV-01": {
+            "title": "Check the alerts for {}",
+            "description": "Please, check the reputation of the host {}, this one seems to be malicious as it leveraged {} alerts during the session."
+        },
+        "SNORT-01": {
+            "title": "Suricata rule tiggered: {}",
+            "description": "A network detection rule has been triggered. It's likely that your device has been compromised or have some suspect behaviour."
+        },
+    },
+    "report": {
+        "numbers": [
+            "one",
+            "two",
+            "three",
+            "four",
+            "five",
+            "six",
+            "seven",
+            "eight",
+            "nine"
+        ],
+        "suspect_title": "Suspect communications",
+        "uncat_title": "Uncategorized communications",
+        "whitelist_title": "Whitelisted communications",
+        "protocol": "Protocol",
+        "domain": "Domain",
+        "dst_ip": "Dst IP address",
+        "dst_port": "Dst port number",
+        "device_name": "Device name",
+        "device_mac": "Device MAC address",
+        "report_generated_on": "Report generated on",
+        "capture_duration": "Capture duration",
+        "packets_number": "Number of packets",
+        "capture_sha1": "Capture SHA1",
+        "report_for_the_capture": "Report for the capture",
+        "report_footer": "This report has been autogenerated by a Tinycheck device. For any question, bug report or feedback, please contact tinycheck@kaspersky.com.",
+        "high_msg": "Your device seems to be compromised as you have {} high alert(s).",
+        "moderate_msg": "You have {} moderate alert(s), your device might be compromised. Please look at them carefully.",
+        "low_msg": "You have only {} low alert(s), don't hesitate to check them.",
+        "none_msg": "Everything looks fine, zero alerts. Don't hesitate to check the uncategorized communications, if any."
+    }
+}

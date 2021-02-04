@@ -2,10 +2,13 @@ import weasyprint
 import os
 import json
 import hashlib
+import re
+import sys
 
 from weasyprint import HTML
 from pathlib import Path
 from datetime import datetime
+from utils import get_config
 
 
 class Report(object):
@@ -27,6 +30,14 @@ class Report(object):
                 self.capture_sha1 = hashlib.sha1(f.read()).hexdigest()
         except:
             self.capture_sha1 = "N/A"
+
+        self.userlang = get_config(("frontend", "user_lang"))
+
+        # Load template language
+        if not re.match("^[a-z]{2}$", self.userlang):
+            self.userlang = "en"
+        with open(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "lang/{}.json".format(self.userlang)))as f:
+            self.template = json.load(f)["report"]
 
     def read_json(self, json_path):
         """
@@ -59,21 +70,35 @@ class Report(object):
             :return: str
         """
         if len(self.alerts["high"]):
-            return "<div class=\"warning high\">Your device seems to be compromised as you have {} high alert(s).</div>".format(self.nb_translate(len(self.alerts["high"])))
+            msg = "<div class=\"warning high\">"
+            msg += self.template["high_msg"].format(
+                self.nb_translate(len(self.alerts["high"])))
+            msg += "</div>"
+            return msg
         elif len(self.alerts["moderate"]):
-            return "<div class=\"warning moderate\">You have {} moderate alert(s), your device might be compromised. Please look at them carefully.</div>".format(self.nb_translate(len(self.alerts["moderate"])))
+            msg = "<div class=\"warning moderate\">"
+            msg += self.template["moderate_msg"].format(
+                self.nb_translate(len(self.alerts["moderate"])))
+            msg += "</div>"
+            return msg
         elif len(self.alerts["low"]):
-            return "<div class=\"warning low\">You have only {} low alert(s), don't hesitate to check them.</div>".format(self.nb_translate(len(self.alerts["low"])))
+            msg = "<div class=\"warning low\">"
+            msg += self.template["low_msg"].format(
+                self.nb_translate(len(self.alerts["low"])))
+            msg += "</div>"
+            return msg
         else:
-            return "<div class=\"warning low\">Everything looks fine, zero alerts. Don't hesitate to check the uncategorized communications, if any.</div>"
+            msg = "<div class=\"warning low\">"
+            msg += self.template["none_msg"]
+            msg += "</div>"
+            return msg
 
     def nb_translate(self, nb):
         """
             Translate a number in a string.
             :return: str
         """
-        a = ["one", "two", "three", "four", "five",
-             "six", "seven", "height", "nine"]
+        a = self.template["numbers"]
         return a[nb-1] if nb <= 9 else str(nb)
 
     def generate_suspect_conns_block(self):
@@ -85,17 +110,17 @@ class Report(object):
         if not len([c for c in self.conns if c["alert_tiggered"] == True]):
             return ""
 
-        title = "<h2>Suspect communications</h2>"
-        table = """<table>
-                       <thead>
-                           <tr>
-                               <th>Protocol</th>
-                               <th>Domain</th>
-                               <th>Dst IP Address</th>
-                              <th>Dst port</th>
-                           </tr>
-                       </thead>
-                <tbody>"""
+        title = "<h2>{}</h2>".format(self.template["suspect_title"])
+        table = "<table>"
+        table += "    <thead>"
+        table += "        <tr>"
+        table += "             <th>{}</th>".format(self.template["protocol"])
+        table += "             <th>{}</th>".format(self.template["domain"])
+        table += "             <th>{}</th>".format(self.template["dst_ip"])
+        table += "             <th>{}</th>".format(self.template["dst_port"])
+        table += "        </tr>"
+        table += "    </thead>"
+        table += "<tbody>"
 
         for rec in self.conns:
             if rec["alert_tiggered"] == True:
@@ -117,17 +142,17 @@ class Report(object):
         if not len([c for c in self.conns if c["alert_tiggered"] == False]):
             return ""
 
-        title = "<h2>Uncategorized communications</h2>"
-        table = """<table>
-                       <thead>
-                           <tr>
-                               <th>Protocol</th>
-                               <th>Domain</th>
-                               <th>Dst IP Address</th>
-                              <th>Dst port</th>
-                           </tr>
-                       </thead>
-                <tbody>"""
+        title = "<h2>{}</h2>".format(self.template["uncat_title"])
+        table = "<table>"
+        table += "    <thead>"
+        table += "        <tr>"
+        table += "             <th>{}</th>".format(self.template["protocol"])
+        table += "             <th>{}</th>".format(self.template["domain"])
+        table += "             <th>{}</th>".format(self.template["dst_ip"])
+        table += "             <th>{}</th>".format(self.template["dst_port"])
+        table += "        </tr>"
+        table += "    </thead>"
+        table += "<tbody>"
 
         for rec in self.conns:
             if rec["alert_tiggered"] == False:
@@ -149,17 +174,17 @@ class Report(object):
         if not len(self.whitelist):
             return ""
 
-        title = "<h2>Whitelisted communications</h2>"
-        table = """<table>
-                    <thead>
-                            <tr>
-                                <th>Protocol</th>
-                                <th>Domain</th>
-                                <th>Dst IP Address</th>
-                                <th>Dst port</th>
-                            </tr>
-                    </thead>
-                <tbody>"""
+        title = "<h2>{}</h2>".format(self.template["whitelist_title"])
+        table = "<table>"
+        table += "    <thead>"
+        table += "        <tr>"
+        table += "             <th>{}</th>".format(self.template["protocol"])
+        table += "             <th>{}</th>".format(self.template["domain"])
+        table += "             <th>{}</th>".format(self.template["dst_ip"])
+        table += "             <th>{}</th>".format(self.template["dst_port"])
+        table += "        </tr>"
+        table += "    </thead>"
+        table += "<tbody>"
 
         for rec in sorted(self.whitelist, key=lambda k: k['resolution']):
             table += "<tr>"
@@ -179,17 +204,18 @@ class Report(object):
         """
         header = "<div class=\"header\">"
         header += "<div class=\"logo\"></div>"
-        header += "<p><br /><strong>Device name: {}</strong><br />".format(
-            self.device["name"])
-        header += "Device MAC address: {}<br />".format(
-            self.device["mac_address"])
-        header += "Report generated on {}<br />".format(
-            datetime.now().strftime("%d/%m/%Y at %H:%M:%S"))
-        header += "Capture duration: {}s<br />".format(
-            self.capinfos["Capture duration"])
-        header += "Number of packets: {}<br />".format(
-            self.capinfos["Number of packets"])
-        header += "Capture SHA1: {}<br />".format(self.capture_sha1)
+        header += "<p><br /><strong>{}: {}</strong><br />".format(self.template["device_name"],
+                                                                  self.device["name"])
+        header += "{}: {}<br />".format(self.template["device_mac"],
+                                        self.device["mac_address"])
+        header += "{} {}<br />".format(self.template["report_generated_on"],
+                                       datetime.now().strftime("%d/%m/%Y - %H:%M:%S"))
+        header += "{}: {}s<br />".format(self.template["capture_duration"],
+                                         self.capinfos["Capture duration"])
+        header += "{}: {}<br />".format(self.template["packets_number"],
+                                        self.capinfos["Number of packets"])
+        header += "{}: {}<br />".format(
+            self.template["capture_sha1"], self.capture_sha1)
         header += "</p>"
         header += "</div>"
         return header
@@ -420,16 +446,16 @@ class Report(object):
                             }
                             @page {
                                 @top-center { 
-                                    content: "REPORT_HEADER - Page " counter(page) " of " counter(pages) ".";
+                                    content: "REPORT_HEADER - Page " counter(page) " / " counter(pages) ".";
                                     font-size:12px;
                                     color:#CCC;
                                 }
                                 @bottom-center { 
-                                    content: "This report has been autogenerated by a Tinycheck device. For any question, bug report or feedback, please contact tinycheck@kaspersky.com.";
+                                    content: REPORT_FOOTER;
                                     font-size:12px;  
                                     color:#CCC;
                                 }
                             }   
                         </style>
                     </head>
-                    <body>""".replace("REPORT_HEADER", "Report for the capture {}".format(self.capture_sha1))
+                    <body>""".replace("REPORT_HEADER", "{} {}".format(self.template["report_for_the_capture"], self.capture_sha1)).replace("REPORT_FOOTER", self.template["report_footer"])

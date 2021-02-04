@@ -4,6 +4,9 @@
 import subprocess as sp
 from flask import Blueprint, jsonify
 from app.utils import read_config
+import re
+import sys
+import os
 
 misc_bp = Blueprint("misc", __name__)
 
@@ -59,3 +62,18 @@ def get_config():
         "reboot_option": read_config(("frontend", "reboot_option")),
         "iface_out": read_config(("network", "out"))
     })
+
+
+@misc_bp.route("/get-lang", methods=["GET"])
+def get_lang():
+    """
+        Get the user lang defined in the config.yaml
+        and retrieve the interface translation.
+    """
+    lang = read_config(("frontend", "user_lang"))
+    if re.match("^[a-z]{2,3}$", lang):
+        with open(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "app/assets/lang/{}.json".format(lang)), "r") as f:
+            return(f.read())
+    else:
+        with open(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "app/assets/lang/en.json"), "r") as f:
+            return(f.read())

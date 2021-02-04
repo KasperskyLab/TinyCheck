@@ -29,7 +29,8 @@ export default {
             loading: false,
             stats_interval: false,
             chrono_interval: false,
-            sparklines: false
+            sparklines: false,
+            translation: {}
         }
     },
     props: {
@@ -86,12 +87,12 @@ export default {
                 .catch(error => {
                     console.log(error)
             });
-        }
+        },
     },
     created: function() {
         // Get the config for the sparklines.
         this.setup_sparklines()
-
+        
         // Start the chrono and get the first stats.
         this.capture_start = Date.now()
         this.set_chrono();

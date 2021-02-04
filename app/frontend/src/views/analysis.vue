@@ -26,7 +26,8 @@ export default {
             question: true,
             running: false,
             check_alerts: false,
-            long_waiting: false
+            long_waiting: false,
+            translation: {}
         }
     },
     props: {

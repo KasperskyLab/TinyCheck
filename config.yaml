@@ -48,6 +48,7 @@ frontend:
   remote_access: true
   sparklines: true
   virtual_keyboard: true
+  user_lang: en
 
 # NETWORK -
 # Some elements related to the network configuration, such as

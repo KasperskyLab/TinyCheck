@@ -47,13 +47,25 @@
 </style>
 
 <script>
+  import axios from 'axios'
   document.title = 'TinyCheck Frontend'
   import Controls from "@/components/Controls.vue"
-
+  
   export default {
     name: 'app',
     components: {
         Controls
+    },
+    methods: {
+        get_lang: function() {
+            axios.get(`/api/misc/get-lang`, { timeout: 60000 })
+                .then(response => { window.translation = response.data; })
+                .catch(error => { console.log(error) });
+        }
+    },
+    created: function() {
+        window.translation = {}
+        this.get_lang()
     }
   }
 </script>

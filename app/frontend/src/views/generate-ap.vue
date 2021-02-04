@@ -55,7 +55,8 @@ export default {
             interval: false,
             error: false,
             reboot_option: false,
-            attempts: 3
+            attempts: 3,
+            translation: {}
         }
     },
     methods: {
@@ -117,7 +118,7 @@ export default {
                 });
             }
         },
-        load_config: function() {
+        get_config: function() {
             axios.get(`/api/misc/config`, { timeout: 60000 })
                 .then(response => {
                     this.reboot_option = response.data.reboot_option
@@ -128,7 +129,7 @@ export default {
         },
     },
     created: function() {
-        this.load_config()
+        this.get_config();
         this.generate_ap();
     }
 }

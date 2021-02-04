@@ -12,12 +12,16 @@ import router from '../router'
 export default {
     name: 'home',
     props: { saved_ssid: String, iface_out: String, list_ssids: Array, internet: Boolean },
+     data() {
+        return {
+            translation: {},
+        }
+    },
     methods: {
         next: function() {
             var saved_ssid = this.saved_ssid
             var list_ssids = this.list_ssids
             var internet = this.internet
-            console.log(this.iface_out)
             if (this.iface_out.charAt(0) == "e"){
                 router.push({ name: 'generate-ap' });
             } else {

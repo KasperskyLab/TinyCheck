@@ -74,7 +74,8 @@ export default {
             have_internet: false,
             enter_creds: false,
             virtual_keyboard: false,
-            refreshing: false
+            refreshing: false,
+            translation: {}
         }
     },
     props: {
@@ -116,7 +117,7 @@ export default {
                     });
             }
         },
-        load_config: function() {
+        get_config: function() {
             axios.get(`/api/misc/config`, { timeout: 60000 })
                 .then(response => {
                     this.virtual_keyboard = response.data.virtual_keyboard
@@ -147,12 +148,12 @@ export default {
                      this.append_ssids(response.data.networks)
                  }).catch(error => {
                      this.refreshing = false
-                    console.log(error)
+                     console.log(error)
             });
         }
     },
     created: function() {
-        this.load_config()
+        this.get_config()
 
         this.have_internet = (this.internet) ? true : false
         this.keyboard = false

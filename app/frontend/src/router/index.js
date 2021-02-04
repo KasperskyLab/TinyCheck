@@ -41,12 +41,14 @@ const routes = [
     component: () => import('../views/save-capture.vue'),
     props: true
   },
-  { path: '/analysis',
+  {
+    path: '/analysis',
     name: 'analysis',
     component: () => import('../views/analysis.vue'),
     props: true
   },
-  { path: '/report',
+  {
+    path: '/report',
     name: 'report',
     component: () => import('../views/report.vue'),
     props: true

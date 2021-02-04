@@ -1,0 +1,108 @@
+{
+    "alerts": {
+        "PROTO-01": {
+            "title": "Une communication {} va à l'extérieur du réseau jusqu'à {}.",
+            "description": "Le protocole {} est généralement utilisé dans des réseaux internes. Vérifiez si le serveur {} a soulevé d'autres alertes. Ceci pourrait indiquer la présence d'une possible application malveillante."
+        },
+        "PROTO-02": {
+            "title": "Connexion {} vers {} sur un port au dessus ou égal à {}.",
+            "description": "Des connexions {} vers {} ont été vues utilisant le port {}. L'utilisation d'un numéro de port non standard peut être associé à des activités malveillantes. Nous recommandons de vérifier si ce serveur possède une bonne réputation en regardant les autres alertes et en le cherchant sur Internet."
+        },
+        "PROTO-03": {
+            "title": "Des communications HTTP ont été réalisées vers {}",
+            "description": "Votre appareil a communiqué avec le serveur {} en utilisant HTTP, un protocole non chiffré. Même si ce n'est pas malveillant en tant que tel, il est rare de voir des communications HTTP issues d'applications installées sur des smartphones exécutées en arrière plan. Il est conseillé de vérifier la réputation du serveur en le recherchant sur Internet."
+        },
+        "PROTO-04": {
+            "title": "Des communications HTTP ont été réalisées vers {} sur un port non standard ({}).",
+            "description": "Votre appareil a communiqué vers le serveur {} en utilisant HTTP, un protocole non chiffré sur le port {}. Ce type de communication peut être signe d'une activité malveillante sur votre appareil car il est très rare qu'HTTP utilise ce port. Il est conseillé de vérifier la réputation du serveur en le recherchant sur Internet."
+        },
+        "PROTO-05": {
+            "title": "Le serveur {} n'a pas été résolu par le protocole DNS durant la session",
+            "description": "Cela signifie que le serveur {} ne possède pas de nom de domaine associé ou que sa résolution a déjà été mise en cache par votre appareil. Si le serveur apparait dans d'autres alertes, merci de vérifier sa réputation."
+        },
+        "IOC-01": {
+            "title": "Connexion vers {} ({}) qui est tagué en tant que {}.",
+            "description": "Le serveur {} est connu pour être associé à des activités malveillantes. Votre appareil est surement compromis et doit être investigué plus en détails par une équipe professionnelle."
+        },
+        "IOC-02": {
+            "title": "Connexion vers {} appartenant au bloc réseau {} qui est tagué en tant que {}.",
+            "description": "Le serveur {} est hébergé dans un réseau qui est connu pour abriter des activités malveillantes. Même si ce n'est pas malveillant en tant que tel, vous devez regarder si d'autres alertes mentionnent ce serveur. Si vous avez certains doutes, recherchez sur Internet ce serveur pour savoir s'il semble être légitime ou non."
+        },
+        "IOC-03": {
+            "title": "Requête DNS vers le domaine {} qui est tagué en tant que {}.",
+            "description": "Le serveur {} vers lequel communique votre appareil a été explicitement catégorisé en tant que malveillant. Votre appareil est sûrement compromis et doit être investigué plus en détails par une équipe professionnelle."
+        },
+        "IOC-04": {
+            "title": "Requête DNS vers le domaine {} qui est tagué en tant que {}.",
+            "description": "Le nom de domaine {} vers lequel communique votre appareil a été explicitement catégorisé comme un tracker. Ceci indique d'une application active sur votre appareil est entrain de vous géo-localiser."
+        },
+        "IOC-05": {
+            "title": "Requête DNS vers le domaine {} qui est un domaine gratuit.",
+            "description": "Le nom de domaine {} utilise un service de noms de domaine gratuits. Ce type de service est couramment utilisé par les cybercriminels ou des acteurs associés à des États au cours de leurs opérations d'espionnage. Il est très suspect qu'une application exécutée en arrière-plan utilise ce type de service, veuillez enquêter."
+        },
+        "IOC-06": {
+            "title": "Requête DNS vers le domaine {} contenant une extension suspecte.",
+            "description": "Le nom de domaine {} utilise une extension suspecte ({}). Même si cela n'est pas malveillant en-soi, l'utilisation d'une extension non générique est l'apanage d'acteurs cybercriminels et étatiques durant leurs opérations. Veuillez vérifier la pertinance de ce domaine en le recherchant sur un moteur de recherche Internet. Si d'autres alertes sont liées à ce dernier, veuillez le considérer comme très suspect."
+        },
+        "IOC-07": {
+            "title": "Le domaine {} utilise un serveur de noms suspect ({}).",
+            "description": "Le nom de domaine {} utilise un server de nom qui a été explicitement catégorisé comme associé à des activités malveillantes. Plusieurs cybercriminels et acteurs étatiques utilisent ce type de serveurs de noms car ils autorisent les paiements anonymes grâce aux cryptomonnaies. Il est conseillé d'investiguer sur ce domaine et l'application s'y connectant en réalisant une analyse post-mortem de l'appareil analysé."
+        },
+        "IOC-08": {
+            "title": "Un certificat associé à des activités de {} a été vu lors de communications vers {}.",
+            "description": "Le certificat ({}) associé au serveur {} a été explicitement catégorisé comme malveillant. Votre appareil est sûrement compromis et doit être investigué plus en détails par une équipe professionnelle."
+        },
+        "SSL-01": {
+            "title": "Connexion SSL utilisant un port non standard ({}) vers {}",
+            "description": "Il n'est pas commun de voir des connexions SSL issues de smartphones utiliser des ports non standards. Même si cela peut être totalement légitime, il est recommandé d'évaluer la réputation du serveur {}, en regardant son enregistrement WHOIS, son système autonome, sa date de création et en le recherchant sur Internet."
+        },
+        "SSL-02": {
+            "title": "Une connexion SSL vers {} utilise un certificat gratuit.",
+            "description": "Les certificats gratuits — tels que Let's Encrypt - sont largement utilisés par des serveurs de commande et de contrôle associés à des implants malveillants ou à des pages Web de phishing. Nous vous recommandons de vérifier le serveur associé à ce certificat, en regardant le nom de domaine, sa date de création, ou en vérifiant sa réputation sur Internet."
+        },
+        "SSL-03": {
+            "title": "Le certificat associé à {} est auto-signé.",
+            "description": "L'utilisation de certificats auto-signés est une chose courante pour des infrastructures d'attaque associées à des activités malveillantes. Nous vous recommandons de vérifier le serveur {} qui est associé à ce certificat, en regardant le nom de domaine (le cas échéant), son enregistrement WHOIS, sa date de création, et en vérifiant sa réputation sur Internet."
+        },
+        "ADV-01": {
+            "title": "Vérifiez les alertes liées au serveur {}",
+            "description": "Merci de vérifier la réputation et les alertes liées au serveur {}, ce dernier semble malveillant, ayant engendré {} alertes durant la session de capture."
+        },
+        "SNORT-01": {
+            "title": "Règle suricata déclanchée : {}",
+            "description": "Une règle de détection de réseau a été déclenchée. Il est probable que votre appareil ait été compromis ou présente un comportement suspect."
+        }
+    },
+    "report": {
+        "numbers": [
+            "un",
+            "deux",
+            "trois",
+            "quatre",
+            "cinq",
+            "six",
+            "sept",
+            "huit",
+            "neuf"
+        ],
+        "suspect_title": "Communications suspectes",
+        "uncat_title": "Communications non catégorisées",
+        "whitelist_title": "Communications légitimes",
+        "protocol": "Protocole",
+        "domain": "Domaine",
+        "dst_ip": "Adresse IP",
+        "dst_port": "Port",
+        "device_name": "Nom de l'appareil",
+        "device_mac": "Adresse MAC de l'appareil",
+        "report_generated_on": "Rapport généré le ",
+        "capture_duration": "Durée de la capture",
+        "packets_number": "Nombre de paquets",
+        "capture_sha1": "SHA1 de la capture",
+        "report_for_the_capture": "Rapport pour la capture",
+        "report_footer": "Ce rapport a été automatiquement généré par une instance de TinyCheck. Pour toute question et retours, n'hésitez pas à contacter tinycheck@kaspersky.com.",
+        "high_msg": "Votre appareil semble être compromis car vous avez {} alerte(s) élevée(s).",
+        "moderate_msg": "Vous avez {} alerte(s) modérée(s), votre appareil peut être compromis. Regardez ces alertes en détail.",
+        "low_msg": "Vous avez uniquement {} alerte(s) faibles, n'hésitez pas à les regarder, on ne sait jamais...",
+        "none_msg": "Toute semble normal, vous avez aucune alerte. Cependant, n'hésitez pas à regarder les communications non catégorisées."
+    }
+}

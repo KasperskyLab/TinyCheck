@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from utils import get_iocs, get_apname, get_device
+from utils import get_iocs, get_apname, get_device, get_config
 import time
 import os
 import subprocess as sp
 import re
 import json
+import sys
 
 
 class SuricataEngine():
@@ -19,6 +20,14 @@ class SuricataEngine():
         self.pcap_path = os.path.join(self.wdir, "capture.pcap")
         self.rules = [r[0] for r in get_iocs(
             "snort")] + self.generate_contextual_alerts()
+
+        self.userlang = get_config(("frontend", "user_lang"))
+
+        # Load template language
+        if not re.match("^[a-z]{2,3}$", self.userlang):
+            self.userlang = "en"
+        with open(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "lang/{}.json".format(self.userlang))) as f:
+            self.template = json.load(f)["alerts"]
 
     def start_suricata(self):
         """
@@ -37,9 +46,8 @@ class SuricataEngine():
                 s = line.split("[**]")[1].strip()
                 m = re.search(
                     r"\[\d+\:(?P<sid>\d+)\:(?P<rev>\d+)\] (?P<title>[ -~]+)", s)
-                self.alerts.append({"title": "Suricata rule tiggered: {}".format(m.group('title')),
-                                    "description": """A network detection rule has been tiggered. It's likely that your device has been compromised 
-                                                     or contains a malicious application.""",
+                self.alerts.append({"title": self.template["SNORT-01"]["title"].format(m.group('title')),
+                                    "description": self.template["SNORT-01"]["description"],
                                     "level": "High",
                                     "id": "SNORT-01"})
         # Remove fast.log
@@ -48,7 +56,7 @@ class SuricataEngine():
     def generate_rule_file(self):
         """
             Generate the rules file passed to suricata.
-            :return: bool if operation succeed. 
+            :return: bool if operation succeed.
         """
         try:
             with open(self.rules_file, "w+") as f:
