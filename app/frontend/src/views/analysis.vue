@@ -1,15 +1,16 @@
 <template>
     <div class="center">
         <div v-if="question">
-            <p>Do you want to analyze the captured communications?</p>
+            <p>{{ $t("analysis.question") }}</p>
             <div class="empty-action">
-                <button class="btn" v-on:click="save_capture()">No, just save them</button>  <button class="btn btn-primary" v-on:click="start_analysis()">Yes, let's do it</button>
+                <button class="btn" v-on:click="save_capture()">{{ $t("analysis.no_btn") }}</button> 
+                <button class="btn btn-primary" v-on:click="start_analysis()">{{ $t("analysis.yes_btn") }}</button>
             </div>
         </div>
         <div v-else-if="running">
             <img src="@/assets/loading.svg"/>
-            <p class="legend" v-if="!long_waiting">Please wait during the analysis...</p>
-            <p class="legend fade-in" v-if="long_waiting">Yes, it can take some time...</p>
+            <p class="legend" v-if="!long_waiting">{{ $t("analysis.please_wait_msg") }}</p>
+            <p class="legend fade-in" v-if="long_waiting">{{ $t("analysis.some_time_msg") }}</p>
         </div>
     </div>
 </template>

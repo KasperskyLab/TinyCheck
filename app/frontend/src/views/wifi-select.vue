@@ -2,41 +2,42 @@
     <div :class="[ keyboard == false ? 'center' : '' ]">
         <div v-if="keyboard == false">
             <div v-if="have_internet">
-                <p>You seem to be already connected to a network.<br />Do you want to use the current connection?</p>
+                <p v-html="$t('wifi_select.already_connected_question')"></p>
                 <div class="empty-action">
-                    <button class="btn" @click="have_internet = false">No, use another</button> <button class="btn" :class="[ connecting ? 'loading' : '', success ? 'btn-success' : 'btn-primary', ]" @click="$router.push({ name: 'generate-ap' })">Yes, use it.</button>
+                    <button class="btn" @click="have_internet = false">{{ $t("wifi_select.no_btn") }}</button> &nbsp;
+                    <button class="btn" :class="[ connecting ? 'loading' : '', success ? 'btn-success' : 'btn-primary', ]" @click="$router.push({ name: 'generate-ap' })">{{ $t("wifi_select.yes_btn") }}</button>
                 </div>
             </div>
             <div v-else>
                 <div v-if="enter_creds" class="wifi-login">
                     <div class="form-group">
                         <select class="form-select" id="ssid-select" v-model="ssid">
-                            <option value="" selected>Wifi name</option>
+                            <option value="" selected>{{ $t("wifi_select.wifi_name") }}</option>
                             <option v-for="ssid in ssids" v-bind:key="ssid.ssid">
                                 {{ ssid.ssid }}
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <input class="form-input" type="password" id="password" v-model="password" placeholder="Wifi password" v-on:click="keyboard = (virtual_keyboard)? true : false">
+                        <input class="form-input" type="password" id="password" v-model="password" :placeholder="$t('wifi_select.wifi_connected')" v-on:click="keyboard = (virtual_keyboard)? true : false">
                     </div>
                     <div class="form-group">
                         <button class="btn width-100" :class="[ connecting ? 'loading' : '', success ? 'btn-success' : 'btn-primary', ]" v-on:click="wifi_setup()">{{ btnval }}</button>
                     </div>
                     <div class="form-group">
-                        <button class="btn width-100" :class="[ refreshing ? 'loading' : '' ]" v-on:click="refresh_wifi_list()">Refresh networks list</button>
+                        <button class="btn width-100" :class="[ refreshing ? 'loading' : '' ]" v-on:click="refresh_wifi_list()">{{ $t("wifi_select.refresh_btn") }}</button>
                     </div>
                 </div>
                 <div v-else>
-                    <p><strong>You seem to not be connected to Internet.</strong><br />Please configure the Wi-Fi connection.</p>
+                    <p><strong>{{ $t("wifi_select.not_connected") }}</strong><br />{{ $t("wifi_select.please_config") }}</p>
                     <div class="empty-action">
-                        <button class="btn btn-primary" @click="enter_creds = true">Ok, let's do that.</button>
+                        <button class="btn btn-primary" @click="enter_creds = true">{{ $t("wifi_select.lets_do_btn") }}</button>
                     </div>
                 </div>
             </div>
         </div>
         <div v-else>
-            <input :value="input" class="keyboardinput" @input="onInputChange" placeholder="Tap on the virtual keyboard to start">
+            <input :value="input" class="keyboardinput" @input="onInputChange" :placeholder="$t('wifi_select.tap_keyboard')">
             <SimpleKeyboard @onChange="onChange" @onKeyPress="onKeyPress" :input="input" />
         </div>
     </div>
@@ -63,7 +64,7 @@ export default {
             connecting: false,
             error: false,
             success: false,
-            btnval: "Connect to it.",
+            btnval: this.$t("wifi_select.btn_connect"),
             ssid: "",
             selected_ssid: false,
             password: "",
@@ -88,10 +89,10 @@ export default {
                     if (response.data.status) {
                         this.success = true
                         this.connecting = false
-                        this.btnval = "Wifi connected!"
+                        this.btnval = this.$t("wifi_select.wifi_connected")
                         setTimeout(() => router.push('generate-ap'), 1000);
                     } else {
-                        this.btnval = "Wifi not connected. Please retry."
+                        this.btnval = this.$t("wifi_select.wifi_not_connected")
                         this.connecting = false
                     }
                 })

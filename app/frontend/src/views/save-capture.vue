@@ -6,14 +6,14 @@
             <div class="icon-usb"></div>
             <div class="icon-usb-plug"></div> 
         </div>
-        <p class="legend" v-if="!saved && !usb"><br />Please connect a USB key to save your capture.</p>
-        <p class="legend" v-if="!saved && usb"><br />We are saving your capture.</p>
-        <p class="legend" v-if="saved"><br />You can tap the USB key to start a new capture.</p>
+        <p class="legend" v-if="!saved && !usb"><br />{{ $t("save_capture.connect_usb") }}</p>
+        <p class="legend" v-if="!saved && usb"><br />{{ $t("save_capture.saving") }}</p>
+        <p class="legend" v-if="saved"><br />{{ $t("save_capture.tap_usb") }}</p>
     </div>
     <div class="center" v-else-if="!save_usb && init">
         <div>
-            <p class="legend">The capture download is going to start...<br /><br /><br /></p>
-            <button class="btn btn-primary" v-on:click="new_capture()">Start another capture</button>
+            <p class="legend">{{ $t("save_capture.capture_dl") }}<br /><br /><br /></p>
+            <button class="btn btn-primary" v-on:click="new_capture()">{{ $t("save_capture.start_capture") }}</button>
             <iframe :src="download_url" class="frame-download"></iframe>
         </div>
     </div>

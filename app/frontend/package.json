@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve --copy --port=4202",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "vue-i18n-extract": "vue-i18n-extract report -a -v './src/**/*.?(js|vue)' -l './src/locales/*.?(json|yaml|yml)'"
   },
   "dependencies": {
     "@fnando/sparkline": "^0.3.10",
@@ -15,6 +16,7 @@
     "sass-loader": "^10.0.4",
     "simple-keyboard": "^2.30.25",
     "vue": "^2.6.12",
+    "vue-i18n": "^8.22.4",
     "vue-router": "^3.4.3"
   },
   "devDependencies": {
@@ -24,6 +26,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.9.0",
     "eslint-plugin-vue": "^6.2.2",
+    "vue-i18n-extract": "1.1.10",
     "vue-template-compiler": "^2.6.12"
   },
   "eslintConfig": {

@@ -2,8 +2,17 @@
   <div id="app">
     <div class="wrapper">
       <Controls />
+
+      <div class="locale-switch">
+        <select v-model="$i18n.locale">
+          <option v-for="(lang, i) in $i18n.availableLocales" :key="`Lang${i}`" :value="lang">
+            {{ lang }}
+          </option>
+        </select>
+      </div>
+
       <transition name="fade" mode="out-in">
-        <router-view />
+          <router-view />
       </transition>
     </div>
   </div>
@@ -24,6 +33,16 @@
   .fade-enter,
   .fade-leave-active {
     opacity: 0
+  }
+
+  .locale-switch {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+  }
+  
+  .locale-switch select {
+    text-transform: uppercase;
   }
 </style>
 

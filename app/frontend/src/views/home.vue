@@ -1,8 +1,8 @@
 <template>
     <div class="center">
-        <h3 class="lobster">Welcome to TinyCheck.</h3>
-        <p>We are going to help you to check your device.</p>
-        <button class="btn btn-primary" v-on:click="next()">Let's start!</button>
+        <h3 class="lobster">{{ $t("home.welcome_msg") }}</h3>
+        <p>{{ $t("home.help_msg") }}</p>
+        <button class="btn btn-primary" v-on:click="next()">{{ $t("home.start_btn") }}</button>
     </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
                                         list_ssids: list_ssids, 
                                         internet:internet } });
             }
-               }
+        }
     }
 }
 </script>

@@ -9,29 +9,30 @@
                         </div>
                         <div class="divider-vert white-bg" data-content="OR"></div>
                         <div class="column col-5"><br />
-                            <span class="light-grey">Network name: </span><br />
+                            <span class="light-grey">{{ $t("generate_ap.network_name") }} </span><br />
                             <h4>{{ ssid_name }}</h4>
-                            <span class="light-grey">Network password: </span><br />
+                            <span class="light-grey">{{ $t("generate_ap.network_password") }} </span><br />
                             <h4>{{ ssid_password }}</h4>
                         </div>
                     </div>
                 </div>
                 <br /><br /><br /><br /> <br /><br /><br /><br /><br /><br />
                 <!-- Requite a CSS MEME for that shit :) -->
-                <span class="legend">Tap the white frame to generate a new network.</span>
+                <span class="legend">{{ $t("generate_ap") }}</span>
             </div>
             <div v-else>
                 <img src="@/assets/loading.svg"/>
-                <p class="legend">We generate an ephemeral network for you.</p>
+                <p class="legend">{{ $t("generate_ap.generate_ap_msg") }}</p>
             </div>
         </div>
         <div v-else>
             <p>
-                <strong>Unfortunately, we got some issues <br />during the AP creation.</strong>
+                <strong v-html="$t('generate_ap.error_msg1')"></strong>
                 <br /><br />
-                Please verify that you've two WiFi interfaces on your device<br /> and try again by restarting it.<br /><br /> 
+                <span v-html="$t('generate_ap.error_msg2')"></span>
+                <br /><br /> 
             </p>
-            <button v-if="reboot_option" class="btn" v-on:click="reboot()">Restart the device</button>
+            <button v-if="reboot_option" class="btn" v-on:click="reboot()">{{ $t("generate_ap.restart_btn") }}</button>
         </div>
     </div>
     

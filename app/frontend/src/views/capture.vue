@@ -4,9 +4,9 @@
         <div class="center">
             <div class="footer">
                 <h3 class="timer">{{timer_hours}}:{{timer_minutes}}:{{timer_seconds}}</h3>
-                <p>Intercepting the communications of {{device_name}}.</p>
+                <p>{{$t("capture.intercept_coms_msg")}} {{device_name}}.</p>
                 <div class="empty-action">
-                    <button class="btn" :class="[ loading ? 'loading' : 'btn-primary', ]" v-on:click="stop_capture()">Stop the capture</button>
+                    <button class="btn" :class="[ loading ? 'loading' : 'btn-primary', ]" v-on:click="stop_capture()">{{$t("capture.stop_btn")}}</button>
                 </div>
             </div>
         </div>
