@@ -11,7 +11,7 @@ import router from '../router'
 
 export default {
     name: 'home',
-    props: { saved_ssid: String, iface_out: String, list_ssids: Array, internet: Boolean },
+    props: { saved_ssid: String, list_ssids: Array, internet: Boolean },
      data() {
         return {
             translation: {},
@@ -22,13 +22,13 @@ export default {
             var saved_ssid = this.saved_ssid
             var list_ssids = this.list_ssids
             var internet = this.internet
-            if (this.iface_out.charAt(0) == "e"){
+            if (window.config.iface_out.charAt(0) == "e"){
                 router.push({ name: 'generate-ap' });
             } else {
                 router.push({ name: 'wifi-select', 
                               params: { saved_ssid: saved_ssid, 
                                         list_ssids: list_ssids, 
-                                        internet:internet } });
+                                        internet: internet } });
             }
         }
     }

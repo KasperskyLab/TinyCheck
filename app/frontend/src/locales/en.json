@@ -15,7 +15,7 @@
     "intercept_coms_msg": "Intercepting the communications of ",
     "stop_btn": "Stop the capture"
   },
-  "generate_ap": {
+  "generate-ap": {
     "network_name": "Network name",
     "network_password": "Network password",
     "tap_msg": "Tap the white frame to generate a new network.",
@@ -45,9 +45,9 @@
     "stalkerware_msg": "Your device is compromised by<br />a Stalkerware, please check the report.",
     "location_msg": "An application is sharing your<br /> current geolocation with a third party.",
     "fine_msg": "Everything looks fine, zero alerts.",
-    "high_msg": "You have {nb} high alert(s),<br />your device seems to be compromised.",
-    "moderate_msg": "You have {nb} moderate alert(s),<br />your device might be compromised.",
-    "low_msg": "You have only {nb} low alert(s),<br /> don't hesitate to check them.",
+    "high_msg": "You have {nb} high alert,<br />your device seems to be compromised.",
+    "moderate_msg": "You have {nb} moderate alerts,<br />your device might be compromised.",
+    "low_msg": "You have only {nb} low alerts,<br /> don't hesitate to check them.",
     "save_report": "Save the report",
     "report_of": "Report of",
     "ip_address": "IP address",
@@ -56,26 +56,26 @@
     "moderate": "moderate",
     "low": "low"
   },
-  "wifi_select": {
+  "wifi-select": {
     "already_connected_question": "You seem to be already connected to a network.<br />Do you want to use the current connection?",
     "no_btn": "No, use another",
     "yes_btn": "Yes, use it.",
-    "wifi_name": "Wifi name",
+    "wifi_name": "Wi-Fi name",
     "refresh_btn": "Refresh networks list",
     "not_connected": "You seem to not be connected to Internet.",
     "please_config": "Please configure the Wi-Fi connection.",
     "lets_do_btn": "Ok, let's do that.",
-    "wifi_connected": "Wifi connected!",
-    "wifi_not_connected": "Wifi not connected. Please retry.",
+    "wifi_connected": "Wi-Fi connected",
+    "wifi_not_connected": "Wi-Fi not connected. Please retry.",
     "tap_keyboard": "Tap on the virtual keyboard to start",
-    "btn_connect": "Connect to it.",
-    "wifi_pwd": "Wifi password"
+    "wifi_password": "Wi-Fi password",
+    "connect_to_it": "Connect to it"
   },
-  "save_capture": {
-    "connect_usb": "Please connect a USB key to save your capture.",
-    "saving": "We are saving your capture.",
-    "tap_usb": "You can tap the USB key to start a new capture.",
-    "capture_dl": "The capture download is going to start...",
-    "start_capture": "Start another capture"
+  "save-capture": {
+    "please_connect": "Please connect a USB key to save your capture.",
+    "we_are_saving": "We are saving your capture.",
+    "tap_msg": "You can tap the USB key to start a new capture.",
+    "capture_download": "The capture download is going to start...",
+    "start_capture_btn": "Start another capture"
   }
 }

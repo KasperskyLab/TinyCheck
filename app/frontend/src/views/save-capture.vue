@@ -6,14 +6,14 @@
             <div class="icon-usb"></div>
             <div class="icon-usb-plug"></div> 
         </div>
-        <p class="legend" v-if="!saved && !usb"><br />{{ $t("save_capture.connect_usb") }}</p>
-        <p class="legend" v-if="!saved && usb"><br />{{ $t("save_capture.saving") }}</p>
-        <p class="legend" v-if="saved"><br />{{ $t("save_capture.tap_usb") }}</p>
+        <p class="legend" v-if="!saved && !usb"><br />{{ $t("save-capture.please_connect") }}</p>
+        <p class="legend" v-if="!saved && usb"><br />{{ $t("save-capture.we_are_saving") }}</p>
+        <p class="legend" v-if="saved"><br />{{ $t("save-capture.tap_msg") }}</p>
     </div>
     <div class="center" v-else-if="!save_usb && init">
         <div>
-            <p class="legend">{{ $t("save_capture.capture_dl") }}<br /><br /><br /></p>
-            <button class="btn btn-primary" v-on:click="new_capture()">{{ $t("save_capture.start_capture") }}</button>
+            <p class="legend">{{ $t("save-capture.capture_download") }}<br /><br /><br /></p>
+            <button class="btn btn-primary" v-on:click="new_capture()">{{ $t("save-capture.start_capture_btn") }}</button>
             <iframe :src="download_url" class="frame-download"></iframe>
         </div>
     </div>
@@ -175,27 +175,18 @@ export default {
         new_capture: function() {
             clearTimeout(this.timeout);
             router.push({ name: 'generate-ap' })
-        },
-        load_config: function() {
-            axios.get(`/api/misc/config`, { timeout: 60000 })
-                .then(response => {
-                    if(response.data.download_links){
-                        this.init = true
-                        this.save_usb = false
-                        this.download_url = `/api/save/save-capture/${this.capture_token}/url`
-                    } else {
-                        this.init = true
-                        this.save_usb = true
-                        this.interval = setInterval(() => { this.check_usb() }, 500);
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-            });
         }
     },
     created: function() {
-        this.load_config()
+        if(window.config.download_links){
+            this.init = true
+            this.save_usb = false
+            this.download_url = `/api/save/save-capture/${this.capture_token}/url`
+        } else {
+            this.init = true
+            this.save_usb = true
+            this.interval = setInterval(() => { this.check_usb() }, 500);
+        }
     }
 }
 </script>
