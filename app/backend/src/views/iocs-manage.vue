@@ -12,18 +12,21 @@
             <li class="tab-item">
                 <a href="#" v-on:click="switch_tab('export')" v-bind:class="{ active: tabs.export }">Export IOCs</a>
             </li>
+            <li class="tab-item">
+                <a href="#" v-on:click="switch_tab('watchers')" v-bind:class="{ active: tabs.watchers }">IOCs Watchers</a>
+            </li>
           </ul>
           <div v-if="tabs.export">
             <iframe :src="export_url" class="frame-export"></iframe>
           </div>
-          <div v-if="tabs.file">
+          <div v-else-if="tabs.file">
             <label class="form-upload empty" for="upload">
                 <input type="file" class="upload-field" id="upload" @change="import_from_file">
                 <p class="empty-title h5">Drop or select a file to import.</p>
                 <p class="empty-subtitle">The file needs to be an export from a TinyCheck instance.</p>
             </label>
           </div>
-          <div v-if="tabs.bulk">
+          <div v-else-if="tabs.bulk">
             <div class="columns">
                 <div class="column col-4 col-xs-4">
                     <div class="form-group">
@@ -63,6 +66,30 @@
             </div>
             <div class="form-group">
                 <button class="btn-primary btn col-12" v-on:click="import_from_bulk()">Import the IOCs</button>
+            </div>
+          </div>
+          <div v-else-if="tabs.watchers">
+            <div class="form-group">
+                <div v-if="wiocsrc_error" class="toast toast-error">
+                    ✗ {{ wiocsrc_error }}
+                </div>
+                <div v-else-if="wiocsrc_success" class="toast toast-success">
+                    ✓ IOCs Watchers sources saved
+                </div>
+                <table class="table table-striped table-hover">
+                    <tbody v-if="config && config.watchers && config.watchers.iocs">
+                        <tr v-for="wiocsrc in config.watchers.iocs" :key="wiocsrc">
+                            <td>{{ wiocsrc }}</td>
+                            <td><button class="btn btn-sm" v-on:click="delete_watcher(wiocsrc)">Delete</button></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><input class="form-input" v-model="wiocsrc" type="text" placeholder="Watcher IOCs source URL"></td>
+                            <td><button class="btn btn-sm" @click="add_watcher()">Add</button></td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
           </div>
           <div class="form-group" v-if="imported.length>0">
@@ -114,7 +141,7 @@
 import axios from 'axios'
 
 export default {
-    name: 'manageiocs',   
+    name: 'manageiocs',
     data() {
         return { 
             type:"",
@@ -127,11 +154,13 @@ export default {
             imported:[],
             type_tag_error: false,
             wrong_ioc_file: false,
-            tabs: { "bulk" : true, "file" : false, "export" : false },
+            tabs: { "bulk": true, "file": false, "export": false, "watchers": false },
             jwt:"",
             export_url:"",
             config: {},
-            watcher: ""
+            wiocsrc_error: false,
+            wiocsrc_success: false,
+            wiocsrc: "",
         }
     },
     props: { },
@@ -170,13 +199,53 @@ export default {
                 .catch(err => (console.log(err)))
             }
         },
-        delete_watcher: function(watcher) {
-            var i = this.config.watchers.indexOf(watcher);
-            this.config.watchers.splice(i, 1);
+        provide_watchers_iocs_config_struct: function() {
+             if( !("watchers" in this.config) ) {
+                 this.$set(this.config, "watchers", {});
+             }
+             if( !("iocs" in this.config.watchers) ) {
+                 this.$set(this.config.watchers, "iocs", []);
+             }
+        },
+        write_watchers_iocs: function() {
+            this.wiocsrc_error = false;
+            this.wiocsrc_success = false;
+            axios.get(`/api/config/edit/watchers/iocs/${this.config.watchers.iocs.join("|")}`, {
+                      timeout: 10000,
+                      headers: { 'X-Token': this.jwt }
+            }).then(response => {
+                    if (response.data.status) {
+                        console.log(response.data);
+                        this.wiocsrc_success = true;
+                        this.load_config();
+                    } else {
+                        this.wiocsrc_error = "IOCs watchers sources change failed: " + response.data;
+                    }
+            })
+            .catch(err => { 
+                   console.log(err);
+                   this.wiocsrc_error = "IOCs watchers sources change failed: API could not be reached";
+            });
+        },
+        delete_watcher: function(wiocsrc) {
+            this.provide_watchers_iocs_config_struct();
+            let exists = this.config.watchers.iocs.indexOf(wiocsrc);
+            if(exists >= 0) {
+                this.config.watchers.iocs.splice(exists, 1);
+                this.write_watchers_iocs();
+            } else {
+                this.wiocsrc_error = "This watcher source does not exist!"
+            }
         },
         add_watcher: function() {
-            this.config.watchers.push(this.watcher);
-            this.watcher = "";
+            this.provide_watchers_iocs_config_struct();
+            let exists = this.config.watchers.iocs.indexOf(this.wiocsrc);
+            if(exists === -1) {
+                this.config.watchers.iocs.push(this.wiocsrc);
+                this.write_watchers_iocs();
+            } else {
+                this.wiocsrc_error = "This watcher source already exists!"
+            }
         },
         enrich_selects: function() {
             axios.get(`/api/ioc/get/tags`, { timeout: 10000, headers: {'X-Token': this.jwt} })
