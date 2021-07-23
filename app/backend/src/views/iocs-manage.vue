@@ -215,17 +215,17 @@ export default {
                       headers: { 'X-Token': this.jwt }
             }).then(response => {
                     if (response.data.status) {
-                        console.log(response.data);
                         this.wiocsrc_success = true;
-                        this.load_config();
                     } else {
-                        this.wiocsrc_error = "IOCs watchers sources change failed: " + response.data;
+                        this.wiocsrc_error = "IOCs watchers sources change failed: " + response.data.message;
+                        console.log(JSON.stringify(response.data));
                     }
             })
             .catch(err => { 
                    console.log(err);
                    this.wiocsrc_error = "IOCs watchers sources change failed: API could not be reached";
-            });
+            })
+            .finally(() => { this.load_config(); });
         },
         delete_watcher: function(wiocsrc) {
             this.provide_watchers_iocs_config_struct();

@@ -12,6 +12,9 @@ from flask import send_file
 
 
 class Config(object):
+
+    ACCEPTED_IOCS_WATCHERS_SOURCES = ("https://raw.githubusercontent.com/",)
+
     def __init__(self):
         self.dir = "/".join(sys.path[0].split("/")[:-2])
         return None
@@ -39,67 +42,82 @@ class Config(object):
     def write_config(self, cat, key, value):
         """
             Write a new value in the configuration
-            :return: bool, operation status
+            :return: dict, operation status as {"status": bool, "message": str}
         """
 
-        config = yaml.load(
-            open(os.path.join(self.dir, "config.yaml"), "r"), Loader=yaml.SafeLoader)
+        ret = {"status": False, "message": None}
 
-        # Some checks prior configuration changes.
-        if cat not in config:
-            return {"status": False,
-                    "message": "Wrong category specified"}
+        config = None
+        try:
+            config = yaml.load(
+                open(os.path.join(self.dir, "config.yaml"), "r"), Loader=yaml.SafeLoader)
+        except Exception as e:
+            ret["message"] = f"Loading config failed: {e}"
 
-        if key not in config[cat]:
-            return {"status": False,
-                    "message": "Wrong key specified"}
-
-        # Changes for network interfaces.
-        if cat == "network" and key in ["in", "out"]:
-            if re.match("^(wlan[0-9]|wl[a-z0-9]{20})$", value):
-                if key == "in":
-                    self.edit_configuration_files(value)
-                    config[cat][key] = value
-                if key == "out":
-                    config[cat][key] = value
-            elif re.match("^(eth[0-9]|en[a-z0-9]{20})$", value) and key == "out":
-                config[cat][key] = value
+        if config:
+            # Some checks prior configuration changes.
+            if cat not in config:
+                ret["message"] = "Wrong category specified"
+            elif key not in config[cat]:
+                ret["message"] = "Wrong key specified"
             else:
-                return {"status": False,
-                        "message": "Wrong value specified"}
+                # Changes for network interfaces.
+                if cat == "network" and key in ["in", "out"]:
+                    if re.match("^(wlan[0-9]|wl[a-z0-9]{20})$", value):
+                        if key == "in":
+                            self.edit_configuration_files(value)
+                            config[cat][key] = value
+                        if key == "out":
+                            config[cat][key] = value
+                    elif re.match("^(eth[0-9]|en[a-z0-9]{20})$", value) and key == "out":
+                        config[cat][key] = value
+                    else:
+                        ret["message"] = "Wrong value specified"
+                # Changes for network SSIDs.
+                elif cat == "network" and key == "ssids":
+                    ssids = list(set(value.split("|"))) if "|" in value else [value]
+                    if len(ssids):
+                        config[cat][key] = ssids
+                    else:
+                        ret["message"] = "Cannot write empty SSIDs list in config"
+                # Changes for watchers.
+                elif cat == "watchers" and key in ["iocs", "whitelists"]:
+                    urls = []
+                    values = list(set(value.split("|"))) if "|" in value else [value]
+                    for value in values:  # Preventing SSRF based on watchers URLs.
+                        if value.startswith(Config.ACCEPTED_IOCS_WATCHERS_SOURCES):
+                            urls.append(value)
+                        else:
+                            ret["message"] = "Only URLs starting with one of " \
+                                f"{Config.ACCEPTED_IOCS_WATCHERS_SOURCES} are " \
+                                "accepted as IOCs watchers sources"
+                            break;
+                    if len(urls):
+                        config[cat][key] = urls
+                # Changes for backend password.
+                elif cat == "backend" and key == "password":
+                    config[cat][key] = self.make_password(value)
+                # Changes for anything not specified.
+                # Warning: can break your config if you play with it (eg. arrays, ints & bools).
+                else:
+                    if isinstance(value, bool):
+                        config[cat][key] = value
+                    elif len(value):
+                        config[cat][key] = value
 
-        # Changes for network SSIDs.
-        elif cat == "network" and key == "ssids":
-            ssids = list(set(value.split("|"))) if "|" in value else [value]
-            if len(ssids):
-                config[cat][key] = ssids
+            if not ret["message"]:
+                try:
+                    with open(os.path.join(self.dir, "config.yaml"), "w") as yaml_file:
+                        yaml_file.write(yaml.dump(config, default_flow_style=False))
+                        ret["status"] = True
+                        ret["message"] = "Configuration updated"
+                except Exception as e:
+                    ret["message"] = f"Writing config file failed: {e}"
 
-        # Changes for watchers.
-        elif cat == "watchers" and key in ["iocs", "whitelists"]:
-            urls = []
-            values = list(set(value.split("|"))) if "|" in value else [value]
-            for value in values:  # Preventing SSRF based on watchers URLs.
-                if "https://raw.githubusercontent.com" in value[0:33]:
-                    urls.append(value)
-            if len(urls):
-                config[cat][key] = urls
-
-        # Changes for backend password.
-        elif cat == "backend" and key == "password":
-            config[cat][key] = self.make_password(value)
-
-        # Changes for anything not specified.
-        # Warning: can break your config if you play with it (eg. arrays, ints & bools).
         else:
-            if isinstance(value, bool):
-                config[cat][key] = value
-            elif len(value):
-                config[cat][key] = value
+            ret["message"] = "Loading config failed: empty config"
 
-        with open(os.path.join(self.dir, "config.yaml"), "w") as yaml_file:
-            yaml_file.write(yaml.dump(config, default_flow_style=False))
-            return {"status": True,
-                    "message": "Configuration updated"}
+        return ret
 
     def make_password(self, clear_text):
         """
