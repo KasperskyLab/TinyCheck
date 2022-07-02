@@ -236,6 +236,7 @@ class ZeekEngine(object):
                     pass
 
                 try:  # Domain history check.
+
                     whois_record = whois.whois(c["resolution"])
                     creation_date = whois_record.creation_date if type(
                         whois_record.creation_date) is not list else whois_record.creation_date[0]
@@ -247,6 +248,7 @@ class ZeekEngine(object):
                                             "host": c["resolution"],
                                             "level": "Moderate",
                                             "id": "ACT-02"})
+
                 except:
                     pass
 
@@ -447,7 +449,6 @@ class ZeekEngine(object):
             self.working_dir), shell=True).wait()
         sp.Popen("cd {} && mv *.log assets/".format(self.working_dir),
                  shell=True).wait()
-
         self.fill_dns(self.working_dir + "/assets/")
         self.netflow_check(self.working_dir + "/assets/")
         self.ssl_check(self.working_dir + "/assets/")

@@ -10,7 +10,7 @@ import os
 from functools import reduce
 
 # I'm not going to use an ORM for that.
-parent = "/".join(sys.path[0].split("/")[:-1])
+parent = os.path.split(os.path.dirname(os.path.abspath(sys.argv[0])))[0]
 conn = sqlite3.connect(os.path.join(parent, "tinycheck.sqlite3"))
 cursor = conn.cursor()
 

@@ -1,7 +1,6 @@
 {
-  "name": "tinycheck-new",
+  "name": "@kaspersky/tinycheck-new",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --copy --port=4202",
     "build": "vue-cli-service build",

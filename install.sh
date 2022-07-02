@@ -264,7 +264,11 @@ change_hostname() {
 
 install_package() {
    # Install associated packages by using aptitude.
+ <<<<<<< pr/92
    if [[ $1 == "dnsmasq" || $1 == "hostapd" || $1 == "tshark" || $1 == "sqlite3" || $1 == "unclutter" || $1 == "swig" || $1 == "curl" ]]; then
+  =======
+   if [[ $1 == "dnsmasq" || $1 == "hostapd" || $1 == "tshark" || $1 == "sqlite3" || $1 == "suricata" || $1 == "unclutter" || $1 == "iptables" ]]; then
+ >>>>>>> main
        apt-get install $1 -y
    elif [[ $1 == "suricata" ]];then 
        add-apt-repository ppa:oisf/suricata-stable
@@ -323,9 +327,13 @@ check_dependencies() {
          "/usr/bin/unclutter"
          "/usr/bin/sqlite3"
          "/usr/bin/pip"
+ <<<<<<< pr/92
 	 "/usr/bin/swig"
 	 "/usr/sbin/dhcpcd"
 	 "/usr/bin/curl")
+ =======
+         "/usr/sbin/iptables")
+ >>>>>>> main
 
    echo -e "\e[39m[+] Checking dependencies...\e[39m"
    for bin in "${bins[@]}"
@@ -418,8 +426,13 @@ check_interfaces(){
     # Wi-Fi interface with AP mode available.
     for iface in $IFACES;
     do
+ <<<<<<< pr/92
         if echo "$iface" | grep -Eq "(wlan[0-9]|wl[a-z0-9]{,20})"; then
             config="$(ip a s $iface)"                             # Get the iface logic configuration
+ =======
+        if echo "$iface" | grep -Eq "(wlan[0-9]|wl[a-z0-9]{2,20})"; then
+            config="$(ifconfig $iface)"                             # Get the iface logic configuration
+ >>>>>>> main
             if echo "$config" | grep -qv "inet "; then              # Test if not currently connected
                 hw="$(iw $iface info | grep wiphy | cut -d" " -f2)" # Get the iface hardware id.
                 info="$(iw phy$hw info)"                            # Get the iface hardware infos.

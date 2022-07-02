@@ -13,7 +13,7 @@ from utils import get_config
 
 class Report(object):
 
-    def __init__(self, capture_directory):
+    def __init__(self, capture_directory, frontend):
         self.capture_directory = capture_directory
         self.alerts = self.read_json(os.path.join(
             capture_directory, "assets/alerts.json"))
@@ -21,10 +21,13 @@ class Report(object):
             capture_directory, "assets/whitelist.json"))
         self.conns = self.read_json(os.path.join(
             capture_directory, "assets/conns.json"))
-        self.device = self.read_json(os.path.join(
-            capture_directory, "assets/device.json"))
-        self.capinfos = self.read_json(os.path.join(
-            capture_directory, "assets/capinfos.json"))
+        self.device = None
+        self.capinfos = None
+        if frontend:
+            self.device = self.read_json(os.path.join(
+                capture_directory, "assets/device.json"))
+            self.capinfos = self.read_json(os.path.join(
+                capture_directory, "assets/capinfos.json"))
         try:
             with open(os.path.join(self.capture_directory, "capture.pcap"), "rb") as f:
                 self.capture_sha1 = hashlib.sha1(f.read()).hexdigest()
@@ -204,16 +207,18 @@ class Report(object):
         """
         header = "<div class=\"header\">"
         header += "<div class=\"logo\"></div>"
-        header += "<p><br /><strong>{}: {}</strong><br />".format(self.template["device_name"],
+        if self.device is not None:
+            header += "<p><br /><strong>{}: {}</strong><br />".format(self.template["device_name"],
                                                                   self.device["name"])
-        header += "{}: {}<br />".format(self.template["device_mac"],
+            header += "{}: {}<br />".format(self.template["device_mac"],
                                         self.device["mac_address"])
         header += "{} {}<br />".format(self.template["report_generated_on"],
                                        datetime.now().strftime("%d/%m/%Y - %H:%M:%S"))
-        header += "{}: {}s<br />".format(self.template["capture_duration"],
-                                         self.capinfos["Capture duration"])
-        header += "{}: {}<br />".format(self.template["packets_number"],
-                                        self.capinfos["Number of packets"])
+        if self.capinfos is not None:
+            header += "{}: {}s<br />".format(self.template["capture_duration"],
+                                             self.capinfos["Capture duration"])
+            header += "{}: {}<br />".format(self.template["packets_number"],
+                                            self.capinfos["Number of packets"])
         header += "{}: {}<br />".format(
             self.template["capture_sha1"], self.capture_sha1)
         header += "</p>"

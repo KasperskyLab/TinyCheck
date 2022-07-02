@@ -16,3 +16,4 @@ qrcode
 netifaces
 weasyprint
 python-whois
+six

@@ -46,7 +46,12 @@ app.register_blueprint(misc_bp, url_prefix='/api/misc')
 app.register_blueprint(update_bp, url_prefix='/api/update')
 
 if __name__ == '__main__':
+    port = ""
+    try:
+        port = int(read_config(("frontend", "http_port")))
+    except:
+        port = 80
     if read_config(("frontend", "remote_access")):
-        app.run(host="0.0.0.0", port=80)
+        app.run(host="0.0.0.0", port=port)
     else:
-        app.run(port=80)
+        app.run(port=port)

@@ -16,60 +16,82 @@ import os
     containing a capture.pcap file.
 """
 
-if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        capture_directory = sys.argv[1]
-        if os.path.isdir(capture_directory):
 
-            manager = Manager()
-            alerts = manager.dict()
+def analyze(capture_directory,frontend=False):
+    if os.path.isdir(capture_directory):
 
-            def zeekengine(alerts):
-                zeek = ZeekEngine(capture_directory)
-                zeek.start_zeek()
-                alerts["zeek"] = zeek.retrieve_alerts()
+        manager = Manager()
+        alerts = manager.dict()
 
-                # whitelist.json writing.
-                with open(os.path.join(capture_directory, "assets/whitelist.json"), "w") as f:
-                    f.write(json.dumps(zeek.retrieve_whitelist(),
-                                       indent=4, separators=(',', ': ')))
+        def zeekengine(alerts):
+            zeek = ZeekEngine(capture_directory)
+            zeek.start_zeek()
+            alerts["zeek"] = zeek.retrieve_alerts()
 
-                # conns.json writing.
-                with open(os.path.join(capture_directory, "assets/conns.json"), "w") as f:
-                    f.write(json.dumps(zeek.retrieve_conns(),
-                                       indent=4, separators=(',', ': ')))
+            if not os.path.isdir(os.path.join(capture_directory, "assets")):
+                os.mkdir(os.path.join(capture_directory, "assets"))
+            # whitelist.json writing.
+            with open(os.path.join(capture_directory, "assets/whitelist.json"), "w") as f:
+                f.write(json.dumps(zeek.retrieve_whitelist(),
+                                   indent=4, separators=(',', ': ')))
 
-            def snortengine(alerts):
-                suricata = SuricataEngine(capture_directory)
-                suricata.start_suricata()
-                alerts["suricata"] = suricata.get_alerts()
+            # conns.json writing.
+            with open(os.path.join(capture_directory, "assets/conns.json"), "w") as f:
+                f.write(json.dumps(zeek.retrieve_conns(),
+                                   indent=4, separators=(',', ': ')))
 
-            # Start the engines.
-            p1 = Process(target=zeekengine, args=(alerts,))
-            p2 = Process(target=snortengine, args=(alerts,))
-            p1.start()
-            p2.start()
+        def snortengine(alerts):
+            suricata = SuricataEngine(capture_directory)
+            suricata.start_suricata()
+            alerts["suricata"] = suricata.get_alerts()
 
-            # Wait to their end.
-            p1.join()
-            p2.join()
+        # Start the engines.
+        p1 = Process(target=zeekengine, args=(alerts,))
+        p2 = Process(target=snortengine, args=(alerts,))
+        p1.start()
+        p2.start()
 
-            # Some formating and alerts.json writing.
-            with open(os.path.join(capture_directory, "assets/alerts.json"), "w") as f:
-                report = {"high": [], "moderate": [], "low": []}
-                for alert in (alerts["zeek"] + alerts["suricata"]):
-                    if alert["level"] == "High":
-                        report["high"].append(alert)
-                    if alert["level"] == "Moderate":
-                        report["moderate"].append(alert)
-                    if alert["level"] == "Low":
-                        report["low"].append(alert)
-                f.write(json.dumps(report, indent=4, separators=(',', ': ')))
+        # Wait to their end.
+        p1.join()
+        p2.join()
 
-            # Generate the report
-            report = Report(capture_directory)
-            report.generate_report()
-        else:
-            print("The directory doesn't exist.")
+        # Some formating and alerts.json writing.
+        with open(os.path.join(capture_directory, "assets/alerts.json"), "w") as f:
+            report = {"high": [], "moderate": [], "low": []}
+            for alert in (alerts["zeek"] + alerts["suricata"]):
+                if alert["level"] == "High":
+                    report["high"].append(alert)
+                if alert["level"] == "Moderate":
+                    report["moderate"].append(alert)
+                if alert["level"] == "Low":
+                    report["low"].append(alert)
+            f.write(json.dumps(report, indent=4, separators=(',', ': ')))
+
+        # Generate the report
+        report = Report(capture_directory,frontend)
+        report.generate_report()
+
     else:
-        print("Please specify a capture directory in argument.")
+        print("The directory doesn't exist.")
+
+
+def usage():
+    print("""Usage: python analysis.py [capture_directory]
+     where [capture_directory] is a directory containing a capture.pcap file
+     analysis.py -f starts the analysis in frontend mode intended to be called by the TinyCheck frontend.""")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2: #called manually without frontend
+        analyze(sys.argv[1], False)
+    elif len(sys.argv) == 3:
+        if(sys.argv[1]) == "-f": #frontend mode
+            analyze(sys.argv[2], True)
+        else:
+            usage()
+
+    else:
+        usage()
+
+
+
