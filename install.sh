@@ -29,7 +29,7 @@ check_operating_system() {
    error="\e[91m    [✘] Need to be run on a Debian-like operating system, exiting.\e[39m"
 
    if [[ -f "/etc/os-release" ]]; then
-       if [[ $(cat /etc/os-release | grep "ID_LIKE=debian") ]]; then
+       if [[ $(cat /etc/os-release | grep "ID=debian") ]]; then
            echo -e "\e[92m    [✔] Debian-like operating system\e[39m"
        else
            echo -e "$error"
