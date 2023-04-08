@@ -124,7 +124,7 @@ def watch_misp():
         tested and then added to the database.
     """
     iocs, misp = IOCs(), MISP()
-    instances = [i for i in misp.get_instances()]
+    instances = list(misp.get_instances())
 
     while instances:
         for i, ist in enumerate(instances):
