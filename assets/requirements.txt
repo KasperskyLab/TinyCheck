@@ -1,6 +1,6 @@
+pymisp==2.4.165.1
+sqlalchemy==1.4.48
 ipwhois
-M2Crypto
-pyOpenSSL
 pydig
 pymisp
 netaddr
@@ -8,7 +8,6 @@ pyyaml
 flask
 flask_httpauth
 pyjwt
-sqlalchemy
 psutil
 pyudev
 wifi
