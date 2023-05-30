@@ -10,7 +10,6 @@ from app.blueprints.misp import misp_bp
 import datetime
 import secrets
 import jwt
-from OpenSSL import SSL
 from app.utils import read_config
 from sys import path
 
@@ -64,7 +63,6 @@ if __name__ == '__main__':
     ssl_key = "{}/{}".format(path[0], 'key.pem')
 
     if read_config(("backend", "remote_access")):
-        app.run(host="0.0.0.0", port=443,
-                ssl_context=(ssl_cert, ssl_key))
+        app.run(host="0.0.0.0", port=443, ssl_context=(ssl_cert, ssl_key))
     else:
-        app.run(port=443, ssl_context=(ssl_cert, ssl_key))
+        app.run(port=443)
