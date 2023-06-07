@@ -2,7 +2,6 @@ pymisp==2.4.165.1
 sqlalchemy==1.4.48
 ipwhois
 pydig
-pymisp
 netaddr
 pyyaml
 flask
