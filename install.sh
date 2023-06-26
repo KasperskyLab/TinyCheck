@@ -69,7 +69,7 @@ set_credentials() {
     read -s password2
     echo ""
 
-    if [ $password1 = $password2 ]; then
+    if [ "$password1" == "$password2" ]; then
         password=$(echo -n "$password1" | sha256sum | cut -d" " -f1)
         sed -i "s/userlogin/$login/g" /usr/share/tinycheck/config.yaml
         sed -i "s/userpassword/$password/g" /usr/share/tinycheck/config.yaml
