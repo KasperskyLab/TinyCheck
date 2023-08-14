@@ -270,7 +270,7 @@ class ZeekEngine(object):
                 if record is not None:
                     f = {"filename": record["filename"],
                          "ip_src": record["id.orig_h"],
-                         "ip_dst": record["id.orig_p"],
+                         "ip_dst": record["id.resp_h"],
                          "mime_type": record["mime_type"],
                          "sha1": record["sha1"]}
                     if f not in self.files:
