@@ -26,7 +26,7 @@ def add_instance():
 @require_header_token
 def delete_instance(misp_id):
     """
-        Delete a MISP instance by its id to the database.
+        Delete a MISP instance by its id in the database.
         :return: status of the operation in JSON
     """
     res = misp.delete_instance(misp_id)
@@ -41,4 +41,4 @@ def get_all():
         :return: list of MISP instances in JSON.
     """
     res = misp.get_instances()
-    return jsonify({"results": [i for i in res]})
+    return jsonify({"results": list(res)})

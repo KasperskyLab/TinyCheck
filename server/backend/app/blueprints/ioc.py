@@ -44,7 +44,7 @@ def add_post():
 @require_header_token
 def delete(ioc_id):
     """
-        Delete an IOC by its id to the database.
+        Delete an IOC by its id in the database.
         :return: status of the operation in JSON
     """
     res = IOCs.delete(ioc_id)
@@ -59,7 +59,7 @@ def search(term):
         :return: potential results in JSON.
     """
     res = IOCs.search(term)
-    return jsonify({"results": [i for i in res]})
+    return jsonify({"results": list(res)})
 
 
 @ioc_bp.route('/get/types')
@@ -70,7 +70,7 @@ def get_types():
         :return: list of types in JSON.
     """
     res = IOCs.get_types()
-    return jsonify({"types": [t for t in res]})
+    return jsonify({"types": list(res)})
 
 
 @ioc_bp.route('/get/tags')
@@ -81,7 +81,7 @@ def get_tags():
         :return: list of types in JSON.
     """
     res = IOCs.get_tags()
-    return jsonify({"tags": [t for t in res]})
+    return jsonify({"tags": list(res)})
 
 
 @ioc_bp.route('/export')
@@ -92,6 +92,6 @@ def get_all():
         :return: list of iocs in JSON.
     """
     res = IOCs.get_all()
-    return Response(json.dumps({"iocs": [i for i in res]}),
+    return Response(json.dumps({"iocs": list(res)}),
                     mimetype='application/json',
                     headers={'Content-Disposition': 'attachment;filename=iocs-export.json'})

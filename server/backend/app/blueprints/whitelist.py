@@ -26,7 +26,7 @@ def add(elem_type, elem_value):
 @require_header_token
 def delete(elem_id):
     """
-        Delete an element by its id to the database.
+        Delete an element by its id in the database.
         :return: status of the operation in JSON
     """
     res = whitelist.delete(elem_id)
@@ -41,7 +41,7 @@ def search(element):
         :return: potential results in JSON.
     """
     res = whitelist.search(element)
-    return jsonify({"results": [e for e in res]})
+    return jsonify({"results": list(res)})
 
 
 @whitelist_bp.route('/get/types')
@@ -52,7 +52,7 @@ def get_types():
         :return: list of types in JSON.
     """
     res = whitelist.get_types()
-    return jsonify({"types": [t for t in res]})
+    return jsonify({"types": list(res)})
 
 
 @whitelist_bp.route('/export')
@@ -63,6 +63,6 @@ def get_all():
         :return: list of elements in JSON.
     """
     res = whitelist.get_all()
-    return Response(json.dumps({"elements": [e for e in res]}),
+    return Response(json.dumps({"elements": list(res)}),
                     mimetype='application/json',
                     headers={'Content-Disposition': 'attachment;filename=whitelist-export.json'})

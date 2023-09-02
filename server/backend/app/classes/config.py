@@ -71,7 +71,7 @@ class Config(object):
         # Changes for network SSIDs.
         elif cat == "network" and key == "ssids":
             ssids = list(set(value.split("|"))) if "|" in value else [value]
-            if len(ssids):
+            if ssids:
                 config[cat][key] = ssids
 
         # Changes for watchers.
@@ -81,7 +81,7 @@ class Config(object):
             for value in values:  # Preventing SSRF based on watchers URLs.
                 if "https://raw.githubusercontent.com" in value[0:33]:
                     urls.append(value)
-            if len(urls):
+            if urls:
                 config[cat][key] = urls
 
         # Changes for backend password.
